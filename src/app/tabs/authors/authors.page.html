@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Авторы</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true"  class="ion-padding">
+  <ion-list class="ion-padding-top">
+    <ion-item *ngFor="let item of authohsList$ | async;">
+      <ion-label>{{item.name}}</ion-label>
+      <ion-button slot="end" (click)="selectedAuthor = item; authorName=item.name; modalEditMode = true; isAuthorEditModalOpen = true;">
+        <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+
+  <!-- add author buttom-->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button size="small" (click)="selectedAuthor = null; authorName=''; modalEditMode = false; isAuthorEditModalOpen = true;">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>  
+
+
+  <ion-modal [isOpen]="isAuthorEditModalOpen" (willDismiss)="onWillDismissAuthorModal($event)" [initialBreakpoint]="0.45" [breakpoints]="[0.4, 0.5, 0.75]" >
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button (click)="cancel()">Закрыть</ion-button>
+          </ion-buttons>
+          <ion-title>{{modalEditMode?'Редактирование':"Добавить"}}</ion-title>
+         </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item lines="full">
+
+          <ion-input labelPlacement="floating" [(ngModel)]="authorName" placeholder="Укажите автора">
+            <div slot="label">Автор<ion-text color="danger">(обязатльное)</ion-text></div>
+          </ion-input>
+
+        </ion-item>
+        <ion-button (click)="save()" expand="block" class="ion-padding-top" [disabled]="authorName.length==0">Сохранить</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

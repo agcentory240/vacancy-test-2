@@ -1,0 +1,167 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Книги</ion-title>
+    <ion-buttons slot="end">
+      <ion-button mode="md" (click)="isFilterModalOpen = true"><ion-icon slot="icon-only"
+          name="filter"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-list>
+
+      <ion-item *ngFor="let book of booksWithAuthors" [routerLink]="['/tabs/books/book-item',book.id]">
+        <ion-label class="ion-text-wrap">
+          <h2><b>{{book.title}}</b></h2>
+          <h3>{{book.authorName}} / {{book.genre}}</h3>
+          <p>{{book.language}} / страниц: {{book.pageCount}}</p>
+        </ion-label>
+
+      </ion-item>
+
+  </ion-list>
+
+    <!-- add book buttom-->
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button size="small" (click)="isNewBookModalOpen = true;">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>  
+
+
+  <ion-modal [isOpen]="isFilterModalOpen" (willDismiss)="onWillDismissFilterModal($event)" [initialBreakpoint]="0.75"
+    [breakpoints]="[0.75]">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button (click)="cancel()">Закрыть</ion-button>
+          </ion-buttons>
+          <ion-title>Поиск по книгам</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+
+        <!-- Поиск -->
+        <ion-searchbar [(ngModel)]="searchTerm" placeholder="Поиск"></ion-searchbar>
+
+        <!-- Фильтр по автору - мультиселект -->
+        <ion-item>
+          <ion-label>Фильтр по автору</ion-label>
+          <ion-select multiple="true" [(ngModel)]="selectedAuthors">
+            <ion-select-option *ngFor="let author of authorsArray" [value]="author.id">{{ author.name
+              }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- Фильтр по языку - мультиселект -->
+        <ion-item>
+          <ion-label>Фильтр по языку</ion-label>
+          <ion-select multiple="true" [(ngModel)]="selectedLanguages">
+            <ion-select-option [value]="language" *ngFor="let language of languagesArray">{{language}}</ion-select-option>
+            <!-- Другие языки -->
+          </ion-select>
+        </ion-item>
+
+        <!-- Фильтр по числу страниц от - до -->
+        <ion-item>
+          <ion-label>Число страниц от</ion-label>
+          <ion-input type="number" [(ngModel)]="minPageCount"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>до</ion-label>
+          <ion-input type="number" [(ngModel)]="maxPageCount"></ion-input>
+        </ion-item>
+
+        <!-- Фильтр по жанру - селект -->
+        <ion-item>
+          <ion-label>Фильтр по жанру</ion-label>
+          <ion-select [(ngModel)]="selectedGenre">
+            <ion-select-option [value]="genre" *ngFor="let genre of genresArray">{{genre}}</ion-select-option>
+            <!-- Другие жанры -->
+          </ion-select>
+        </ion-item>
+
+        <ion-button (click)="setFilter()" expand="block" class="ion-padding-top">Фильтровать</ion-button>
+        <ion-button (click)="clearFilter()" expand="block" fill="outline" class="ion-padding-top">Сбросить фильтр</ion-button>
+
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="isNewBookModalOpen" (willDismiss)="isNewBookModalOpen = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button (click)="cancel()">Закрыть</ion-button>
+          </ion-buttons>
+          <ion-title>Новая книга</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <form [formGroup]="bookForm">
+
+          <ion-item>
+            <ion-label position="floating">Название</ion-label>
+            <ion-input formControlName="title" type="text"></ion-input>
+          </ion-item>
+          <div *ngIf="bookForm.controls['title'].touched && bookForm.controls['title'].invalid" class="validation-error">
+            <p>Название книги обязательно</p>
+          </div>
+
+          <ion-item>
+            <ion-label position="floating">Автор</ion-label>
+            <ion-select formControlName="author">
+              <ion-select-option *ngFor="let author of authorsArray" [value]="author.id">{{ author.name }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <div *ngIf="bookForm.controls['author'].touched && bookForm.controls['author'].invalid" class="validation-error">
+            <p>Автор книги обязателен</p>
+          </div>
+
+          <ion-item>
+            <ion-label position="floating">Описание</ion-label>
+            <ion-textarea formControlName="description"></ion-textarea>
+          </ion-item>
+          <div *ngIf="bookForm.controls['description'].touched && bookForm.controls['description'].invalid" class="validation-error">
+            <p>Описание книги обязательно</p>
+          </div>
+
+          <ion-item>
+            <ion-label position="floating">Число страниц</ion-label>
+            <ion-input formControlName="pageCount" type="number"></ion-input>
+          </ion-item>
+          <div *ngIf="bookForm.controls['pageCount'].touched && bookForm.controls['pageCount'].invalid" class="validation-error">
+            <p>Число страниц обязательно</p>
+          </div>
+
+          <ion-item>
+            <ion-label position="floating">Язык</ion-label>
+            <ion-select formControlName="language">
+              <ion-select-option *ngFor="let language of languagesArray" [value]="language">{{ language }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <div *ngIf="bookForm.controls['language'].touched && bookForm.controls['language'].invalid" class="validation-error">
+            <p>Язык книги обязателен</p>
+          </div>
+
+          <ion-item>
+            <ion-label position="floating">Жанр</ion-label>
+            <ion-input formControlName="genre" type="text"></ion-input>
+          </ion-item>
+          <div *ngIf="bookForm.controls['genre'].touched && bookForm.controls['genre'].invalid" class="validation-error">
+            <p>Жанр книги обязателен</p>
+          </div>
+        </form>
+
+
+        <ion-button (click)="saveBook()" expand="block" class="ion-padding-top">Сохранить</ion-button>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

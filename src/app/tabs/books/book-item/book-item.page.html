@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button default-href="#"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Информация</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-list class="ion-padding-top" *ngIf="book_load">
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Название</p>
+        <h2><b>{{bookInfo?.title}}</b></h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Aвтор</p>
+        <h3><b>{{authorInfo?.name}}</b></h3>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Жанр</p>
+        <h4>{{bookInfo?.genre}}</h4>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Язык</p>
+        <h4>{{bookInfo?.language}}</h4>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Количество страниц</p>
+        <h4>{{bookInfo?.pageCount}}</h4>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Описание</p>
+        <h5>{{bookInfo?.description}}</h5>
+      </ion-label>
+    </ion-item>
+
+</ion-list>
+</ion-content>
